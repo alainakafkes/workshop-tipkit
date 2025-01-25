@@ -1,5 +1,6 @@
 import TipKit
 
+@available(iOS 17.0, *)
 struct SimpleStarTip: Tip {
     var id: String = UUID().uuidString
 

@@ -44,7 +44,7 @@ struct ContentView: View {
                     ListItemView(title: "Wrath")
                     ListItemView(title: "War")
                 } header: {
-                    ListItemView(title: "Themes")
+                    Text("Themes")
                 }
 
                 Section {
@@ -60,7 +60,7 @@ struct ContentView: View {
                     ListItemView(title: "Pomegranates")
                     ListItemView(title: "Wine")
                 } header: {
-                    ListItemView(title: "Foods")
+                    Text("Foods")
                 }
             }
         }
