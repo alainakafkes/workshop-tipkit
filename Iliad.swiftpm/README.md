@@ -115,13 +115,43 @@ Before we treat our tip to a glow-up, let's isolate it in its own SwiftUI previe
 
 **Exercise**: use `#Preview { ... }` syntax to present a `TipView` for `SimpleStarTip` (or the tip you created in the "Creating a tip" section) in the SwiftUI previews window.
 
+> [!TIP]
+> If you run into a compiler error stating that `TipView`'s initializer can only be used in iOS 17+, annotate the offending macro (e.g., `#Preview`), struct, or other declaration with `@available(iOS 17.0, *)`.
+>
+> Sadly Xcode's did not allow me specify a minimum iOS version in this app playground, so you may run into this error a number of times. :<
+
+Now that you can preview your tip as a `TipView`, you can zhuzh it up using view modifiers.
+
+**Exercise**: Apply one or more view modifiers to the `TipView` you created in the last exercise. Consider tweaking its [appearance](https://developer.apple.com/documentation/swiftui/view-appearance), [text](https://developer.apple.com/documentation/swiftui/view-text-and-symbols), and [layout](https://developer.apple.com/documentation/swiftui/view-layout).
+
+You can alternatively build out a style to apply to more than one tip. (More only multiple tips soon!). SwiftUI views – like the `TipView` itself – accept a [`.tipViewStyle()`](https://developer.apple.com/documentation/SwiftUI/View/tipViewStyle(_:)) view modifier. The one and only argument of the `tipViewStyle` modifier is an object that conforms to the [`TipViewStyle`](https://developer.apple.com/documentation/TipKit/TipViewStyle) protocol.
+
+Here's a short example of a structure that conforms to `TipViewStyle`, and a `TipView` that uses it:
+
+```
+@available(iOS 17.0, *)
+struct SimpleStarTipStyle: TipViewStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.tip.title
+            .font(.headline)
+            .foregroundColor(.pink)
+    }
+}
+
+@available(iOS 17.0, *)
+#Preview {
+    TipView(SimpleStarTip())
+        .tipViewStyle(SimpleStarTipStyle())
+}
+```
+
+**Exercise**: Move the styling logic you wrote on the `TipView` in the last exercise into a `TipViewStyle`-conforming structure, and apply that `TipViewStyle` to said `TipView`.
+
+## Writing display rules for a tip
+
 TK
 
 ## Displaying a group of tips
-
-TK
-
-## Writing display rules for our tips
 
 TK
 
