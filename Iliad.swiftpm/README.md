@@ -107,7 +107,7 @@ struct ExampleView: View {
 
 What of popover tips? They too support actions! The [`.popoverTip()`](https://developer.apple.com/documentation/swiftui/view/popovertip(_:arrowedge:action:)) view modifier has an `action` closure as one of its arguments. This closure has the same type as the `TipView` `action` closure shown above.
 
-**Exercise**: hook up the action you created earlier in this section to a change that happens within the UI. If working with the `SimpleStarTip`, consider building an empty version of the Strategic Study screen and navigating to it when the user taps on the action button.
+**Exercise**: Hook up the action you created earlier in this section to a change that happens within the UI. If working with the `SimpleStarTip`, consider building an empty version of the Strategic Study screen and navigating to it when the user taps on the action button.
 
 ## Styling a tip
 
@@ -132,9 +132,15 @@ Here's a short example of a structure that conforms to `TipViewStyle`, and a `Ti
 @available(iOS 17.0, *)
 struct SimpleStarTipStyle: TipViewStyle {
     func makeBody(configuration: Configuration) -> some View {
-        configuration.tip.title
-            .font(.headline)
-            .foregroundColor(.pink)
+        VStack(alignment: .trailing) {
+            configuration.tip.title
+                .font(.caption)
+                .foregroundColor(.pink)
+                .textCase(.uppercase)
+
+            configuration.tip.message
+                .font(.title)
+        }
     }
 }
 
@@ -145,13 +151,79 @@ struct SimpleStarTipStyle: TipViewStyle {
 }
 ```
 
-**Exercise**: Move the styling logic you wrote on the `TipView` in the last exercise into a `TipViewStyle`-conforming structure, and apply that `TipViewStyle` to said `TipView`.
+**Exercise**: Move the styling logic you wrote on the `TipView` in the last exercise into a `TipViewStyle`-conforming structure, and apply that `TipViewStyle` to the aforementioned `TipView`.
 
 ## Writing display rules for a tip
 
-TK
+Thus far, we've played around with how our tips look. Let's turn our attention to when – or, rather, under which conditions – our tips can be displayed.
+
+The TipKit framework enables us to write [two types of eligibility rules](https://developer.apple.com/documentation/tipkit/tip/rule) that determine if and when our tips should be displayed:
+* parameter-based rules, which are based on state or boolean values; and
+* event-based rules, which are based on user actions.
+
+Both types of rules can be constructed with swift's `#Rule` macro. Their definitions should live within the `rules` array of a `Tip`.
+
+### Parameter rules
+
+Here's what a parameter-based rule for `SimpleStarTip` might look like:
+
+```
+struct SimpleStarTip: Tip {
+    // title, message, and image defined above
+
+    @Parameter static var isFirstDayOfTheMonth: Bool = false
+
+    var rules: [Rule] {
+        #Rule(Self.$isFirstDayOfTheMonth) { currentValue
+            currentValue == true // displays tip when isFirstDayOfTheMonth is set to true
+        }
+    }
+}
+```
+
+With this rule in place, the app only presents `SimpleStarTip` when `isFirstDayOfTheMonth` is set to true.
+
+**Exercise**: Write a rule that displays `SimpleStarTip` (or the tip you created in the "Creating a tip" section) every other minute. Validate this new rule within Iliad.
+
+### Event rules
+
+Here's what an event-based rule for `SimpleStarTip` might look like:
+
+```
+struct SimpleStarTip: Tip {
+    static let didScrollToBottom: Event = Event(id: "didScrollToBottom")
+
+    var rules: [Rule] {
+        #Rule(Self.didScrollToBottom) {
+            $0.donations.count == 1 // displays tip when user has scrolled to bottom of the screen exactly once
+        }
+    }
+}
+```
+
+This rule merits more explanation because it relies on event donations. I'm not sure why Apple employs the word "donation" in this context (or others, like Siri!), but, in the TipKit framework, it is how an app communicates to the operating system that a given event has happened. So, one donation equals one event instance.
+
+In order to increment the `donations` counter on the `didScrollToBottom` `Event` declared above, we must call the latter's [`donate()`](https://developer.apple.com/documentation/tipkit/tips/event/donate()) method. Note that it is asynchronous!
+
+```
+struct ExampleView: View {
+    var body: some View {
+        Circle()
+            .task {
+                await SimpleStarTip.didScrollToBottom.donate()
+            }
+    }
+}
+
+```
+
+**Exercise**: Write a rule that displays `SimpleStarTip` (or the tip you created in the "Creating a tip" section) when a user taps on one of the `List`'s section headers four times. Validate this new rule within Iliad.
 
 ## Displaying a group of tips
+
+TK
+
+## Testing tips
 
 TK
 
