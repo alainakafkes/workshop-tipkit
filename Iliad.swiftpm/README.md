@@ -120,9 +120,9 @@ Before we treat our tip to a glow-up, let's isolate it in its own SwiftUI previe
 >
 > Sadly Xcode's did not allow me specify a minimum iOS version in this app playground, so you may run into this error a number of times. :<
 
-Now that you can preview your tip as a `TipView`, you can zhuzh it up using view modifiers.
+Now that you can preview your tip as a `TipView`, you can zhuzh it up using view modifiers. As with other SwiftUI `View`s, you can tweak a tip's [appearance](https://developer.apple.com/documentation/swiftui/view-appearance), [text](https://developer.apple.com/documentation/swiftui/view-text-and-symbols), and [layout](https://developer.apple.com/documentation/swiftui/view-layout). You can also employ tip-specific view modifiers, such as [`.tipCornerRadius()`](https://developer.apple.com/documentation/swiftui/view/tipcornerradius(_:antialiased:)/), which sets the corner radius of an inline `TipView`.
 
-**Exercise**: Apply one or more view modifiers to the `TipView` you created in the last exercise. Consider tweaking its [appearance](https://developer.apple.com/documentation/swiftui/view-appearance), [text](https://developer.apple.com/documentation/swiftui/view-text-and-symbols), and [layout](https://developer.apple.com/documentation/swiftui/view-layout).
+**Exercise**: Apply one or more view modifiers to the `TipView` you created in the last exercise. 
 
 You can alternatively build out a style to apply to more than one tip. (More only multiple tips soon!). SwiftUI views – like the `TipView` itself – accept a [`.tipViewStyle()`](https://developer.apple.com/documentation/SwiftUI/View/tipViewStyle(_:)) view modifier. The one and only argument of the `tipViewStyle` modifier is an object that conforms to the [`TipViewStyle`](https://developer.apple.com/documentation/TipKit/TipViewStyle) protocol.
 
@@ -221,12 +221,54 @@ struct ExampleView: View {
 
 ## Displaying a group of tips
 
-TK
+As of WWDC 2024, TipKit allows developers to orchestrate a series of tips to be displayed sequentially! Apple dubbed this new feature the [`TipGroup`](https://developer.apple.com/documentation/tipkit/tipgroup). I think of `TipGroup` as a walkthrough.
 
-## Testing tips
+> [!TIP]
+> `TipGroup` is an iOS 18+ feature. Annotate your structs, constants, variables, et cetera with `@available(iOS 18.0, *)` as needed to avoid compiler errors.
 
-TK
+`TipGroup` supports presenting tips in the order in which you write them into its initializer (`ordered`), or in the order in which users become eligible (via display rules) to view them (`firstAvailable`).
+
+In the example below, I've arranged a tip that welcomes the user to the Iliad app and the `SimpleStarTip` seen earlier into a short walkthrough. I've instantiated them within an `ordered` `TipGroup`, which will display `WelcomeTip` before `SimpleStarTip`. I also demonstrate that walkthroughs needn't be only inline or only popover tips; you can mix and match to your heart's content!
+
+```
+@available(iOS 18.0, *)
+struct ContentView: View {
+    @State var tips = TipGroup(.ordered) {
+        WelcomeTip()
+        SimpleStarTip()
+    }
+
+    var body: some View {
+        VStack {
+            Text("A few things about Homer's Iliad")
+
+            TipView(tips.currentTip as? WelcomeTip)
+
+            List {
+                Section {
+                    ListItemView(title: "Little Ajax")
+                        .popoverTip(tips.currentTip as? SimpleStarTip, arrowEdge: .bottom)
+
+                    // et cetera
+                }
+
+                // et cetera
+            }
+        }
+    }
+}
+```
+
+**Exercise**: Write one or a few more components that conform to the `Tip` protocol. Feel free to reuse `SimpleStarTip` (or the tip you created in the "Creating a tip" section) too, if desired. Orchestrate these tips into an `TipGroup` with priority `ordered`, and display it within the Iliad app.
+
+**Exercise**: Orchestrate the tips you wrote in the previous exercise into a `TipGroup` with priority `firstAvailable`, and display it within the Iliad app. Utilize the display rules you created in the "Writing display rules for a tip" section to determine whether a user can see a given tip within the `TipGroup` at a given time.
 
 ## Further reading
 
 * [Apple's TipKit documentation](https://developer.apple.com/documentation/tipkit)
+* [Make features discoverable with TipKit - WWDC 2023](https://developer.apple.com/videos/play/wwdc2023/10229/)
+* [Customize feature discovery with TipKit - WWDC 2024](https://developer.apple.com/videos/play/wwdc2024/10070/)
+* [Mastering TipKit: Advanced by Xu Yang](https://fatbobman.com/en/posts/mastering-tipkit-advance/)
+* [Adding teachable moments to your app with TipKit by Ben Dodson](https://bendodson.com/weblog/2023/07/26/tipkit-tutorial/)
+* [TipKit code examples repository by Jordi Bruin](https://github.com/jordibruin/TipKit-Examples)
+* [Useful tips for implementing TipKit by Michael Amundsen](https://lickability.com/blog/useful-tips-for-implementing-tipkit/)
