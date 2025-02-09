@@ -12,25 +12,28 @@ final class WalkthroughViewModel: ObservableObject {
     private(set) var currentStep: WalkthroughStep
 
     let onEvent: PassthroughSubject<TooltipEvent, Never> = .init()
-
+    
     var scrollProxy: ScrollViewProxy?
-
+    
+    /// The minimum vertical position of the at-home recommendations section title in the global (i.e., screen) coordinate space.
     @Published
-    private(set) var atHomeRecommendationsSectionTitleGlobalY: CGFloat?
+    private(set) var atHomeRecommendationsSectionTitleGlobalMinY: CGFloat?
     func setAtHomeRecommendationsSectionTitleGlobalY(_ newValue: CGFloat) {
         DispatchQueue.main.async {
-            self.atHomeRecommendationsSectionTitleGlobalY = newValue
+            self.atHomeRecommendationsSectionTitleGlobalMinY = newValue
         }
     }
 
+    /// The minimum vertical position of the top recommendations section eyebrow in the global (i.e., screen) coordinate space.
     @Published
-    private(set) var topRecommendationsEyebrowGlobalY: CGFloat?
+    private(set) var topRecommendationsEyebrowGlobalMinY: CGFloat?
     func setTopRecommendationsEyebrowGlobalY(_ newValue: CGFloat) {
         DispatchQueue.main.async {
-            self.topRecommendationsEyebrowGlobalY = newValue
+            self.topRecommendationsEyebrowGlobalMinY = newValue
         }
     }
 
+    /// The maximum vertical position of the at-home recommendations section title in the global (i.e., screen) coordinate space.
     @Published
     private(set) var headerViewGlobalMaxY: CGFloat?
     func setHeaderViewGlobalMaxY(_ newValue: CGFloat) {
@@ -68,8 +71,8 @@ final class WalkthroughViewModel: ObservableObject {
     var caretDirection: TooltipCaretDirection {
         currentStep.caretDirection
     }
-
-    // todo(alaina): add documentation
+    
+    /// The amount by which to vertically shift the `TooltipView` so that it points to the correct element on the screen.
     var verticalOffset: CGFloat {
         let tooltipHeight: CGFloat = 140
         let tooltipCaretToContentPadding: CGFloat = 8
@@ -82,13 +85,13 @@ final class WalkthroughViewModel: ObservableObject {
                     return 0
                 }
             case .third:
-                if let topRecsEyebrowGlobalY = topRecommendationsEyebrowGlobalY {
+                if let topRecsEyebrowGlobalY = topRecommendationsEyebrowGlobalMinY {
                     return topRecsEyebrowGlobalY - tooltipHeight - tooltipCaretToContentPadding
                 } else {
                     return 0
                 }
             case .fourth:
-                if let atHomeRecsSectionTitleGlobalY = atHomeRecommendationsSectionTitleGlobalY {
+                if let atHomeRecsSectionTitleGlobalY = atHomeRecommendationsSectionTitleGlobalMinY {
                     return atHomeRecsSectionTitleGlobalY - tooltipHeight
                 } else {
                     return 0
@@ -146,7 +149,10 @@ final class WalkthroughViewModel: ObservableObject {
         let event = TooltipEvent(kind: .seen, message: currentStep.message)
         onEvent.send(event)
     }
-
+    
+    /// The identifier of the visual element to which to scroll.
+    /// - Parameter step: data representation of a tooltip
+    /// - Returns: an identifier for a visual element
     private func tooltipAnchor(for step: WalkthroughStep) -> TooltipAnchor {
         switch step {
             case .first,
@@ -158,15 +164,17 @@ final class WalkthroughViewModel: ObservableObject {
                 .atHomeRecommendations
         }
     }
-
+    
+    /// The vertical alignment of the visual element highlighted by `step` relative to the current viewport.
+    /// - Parameter step: data representation of a tooltip
+    /// - Returns: a `UnitPoint` representing to which part of the viewport the highlighted view should be pinned
     private func unitPoint(for step: WalkthroughStep) -> UnitPoint {
         switch step {
             case .first,
                  .second:
                 .top
-            case .third:
-                UnitPoint(x: 0, y: 1.2)
-            case .fourth:
+            case .third,
+                 .fourth:
                 .bottom
         }
     }

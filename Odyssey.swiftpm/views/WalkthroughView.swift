@@ -8,7 +8,6 @@ struct WalkthroughView: View {
     var body: some View {
         ZStack(alignment: .top) {
             GeometryReader { geometry in
-
                 let globalYOffset = viewModel.verticalOffset
                 let frameGlobalYPosition = geometry.frame(in: .global).minY
                 let localYOffset = globalYOffset - frameGlobalYPosition
