@@ -14,13 +14,14 @@ And, lest we overwhelm our users with too much education, we'll learn good desig
 
 * Introduction: what's a feature walkthrough?
 * Tinkering with TipKit
-    * Displaying a tip
-    * Styling tips 
+    * Creating, displaying, and dismissing a tip
+    * Supporting user interaction
+    * Styling a tip 
+    * Writing rules to determine when to display a tip
     * Displaying a group of tips 
-    * Writing display rules for tips
 * A TipKit-less take (custom tips)
-    * (Re)building a UI/UX alternative
-    * TipKit versus custom: which would you choose?
+    * Contrasting a custom walkthrough solution with TipKit
+    * Extending upon a custom walkthrough
 * Closing remarks: my tips on tips
 
 ## Prerequisites
@@ -43,4 +44,4 @@ Please open the Odyssey app playground in Xcode, and follow the instructions wit
 
 ## Closing remarks
 
-**TODO**: create slides and share link here!
+**TODO**: create slides and share link here

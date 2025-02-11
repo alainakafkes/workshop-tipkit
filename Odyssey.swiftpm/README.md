@@ -23,3 +23,15 @@ I invite you to poke through the code, and let me know if you have any other que
 **Exercise**: Create and display a fifth tooltip that points to the "On the go" section header within the `ContentView`. Highlight some or all of the "On the go" section, and dim the rest of the subviews in the viewport.
 
 **Exercise**: How might have you designed this walkthrough differently? I am open to feedback. :)
+
+## Comparing Odyssey's walkthrough to TipKit
+
+The custom walkthrough built within Odyssey exceeds TipKit's capabilities in that it
+
+1. automatically scrolls user's to the correct subview associated with the tooltip, and
+2. highlights that subview and dims all others.
+
+However, by not using TipKit, Odyssey's walkthrough forfeits access to built-in display rules, and must keep track of when to display the walkthrough on its own.
+
+What other differences do you notice between TipKit and Odyssey's custom walkthrough? Does TipKit suit your app's needs, or might you too consider building a custom walkthrough?
+
