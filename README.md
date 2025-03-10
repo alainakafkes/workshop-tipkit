@@ -32,7 +32,7 @@ Before participating in this workshop, please complete the following set-up step
 
 ## Introduction
 
-**TODO**: create slides and share link here!
+See slides.pdf within this repository!
 
 ## Tinkering with TipKit
 
@@ -44,4 +44,4 @@ Please open the Odyssey app playground in Xcode, and follow the instructions wit
 
 ## Closing remarks
 
-**TODO**: create slides and share link here
+See slides.pdf within this repository!
